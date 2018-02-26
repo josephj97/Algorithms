@@ -12,48 +12,6 @@
 #include <iostream>
 using namespace std;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-template<class Value>
-struct Array
-{
-    int  n, sz;
-    Value* arr;
-
-    void Initialize()
-    {
-        sz=1;
-        n=0;
-        arr=new Value[sz];
-    }
-    void Destroy()
-    {
-        delete[] arr;
-    }
-    void AddLast(Value v)
-    {
-        if(n==sz)
-        {
-            sz*=2;
-            Value* new_arr = new Value[sz];
-            for(int i=0;i<n;i++)
-                new_arr[i]=arr[i];
-            delete[]arr;
-            arr=new_arr;
-        }
-        arr[n++]=v;
-    }
-    void RemoveLast()
-    {
-        n--;
-    }
-    Value& operator[](int i)
-    {
-        return arr[i];
-    }
-};
-///////////////////////
-
 struct DisjointSets
 {
     int n;
@@ -67,7 +25,7 @@ struct DisjointSets
         num_nodes = new int [n];
         for(int i=0;i<n;i++)
         {
-            parent[i] = i+1;
+            parent[i] = -1;
             num_nodes[i] = 1;
         }
     }
@@ -75,7 +33,6 @@ struct DisjointSets
     {
         delete[]parent;
         delete[]num_nodes;
-        n=0;
     }
     int Find(int i)
     {
@@ -100,31 +57,35 @@ struct DisjointSets
         }
         return true;
     }
+    int FindMax()
+    {
+        int maxx=-1;
+        for(int i=0;i<n;i++)
+            maxx=max(maxx,num_nodes[i]);
+        return maxx;
+    }
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
-    int t,n,m,max=-1;
+    int t,n,m,a,b;
+    DisjointSets djs;
     cin>>t;
     while (t--)
     {
-        DisjointSets djs;
         cin>>n>>m;
         djs.Initialize(n);
-        int a,b;
         for(int i=0;i<m;i++)
         {
             cin>>a>>b;
-            djs.Union(a,b);
+            djs.Union(a-1,b-1);
         }
-        for(int i=0;i<djs->num_nodes.length();i++)
-        {
-            if(max<djs.num_nodes[i])
-                max=djs.num_nodes[i];
-        }
+        int max = djs.FindMax();
         cout<<max<<endl;
+        djs.Destroy();
+
     }
     return 0;
 }
