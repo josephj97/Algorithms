@@ -76,7 +76,7 @@ struct Graph
     void Initialize(int _n)
     {
         n=_n;
-        nodes = new Node();
+        nodes = new Node[n];
         for(int i=0;i<n;i++)
             nodes[i].Initialize();
     }
@@ -126,8 +126,8 @@ struct Queue {
 };
 void BFS(Graph& g, int s)
 {
-    Queue q;
-    q.Initialize(1000000);
+    Queue<int> q;
+    q.Initialize(g.n);
     int* vis = new int [g.n];
     int* dst = new int [g.n];
     int* pre = new int [g.n];
@@ -139,26 +139,54 @@ void BFS(Graph& g, int s)
     vis[s]=1;
     dst[s]=0;
     q.Add(s);
+    int boomsize=0,boomday=0,max=-1,d=0;
     while(q.Num())
     {
+        d++;
         int cur=q.Pop();
         for(int i=0;i<g.nodes[cur].adj.n;i++)
         {
             int x=g.nodes[cur].adj[i];
             if(!vis[x])
             {
+                boomsize++;
                 vis[x]=1;
                 pre[x]=cur;
                 dst[x]=dst[cur]+1;
                 q.Add(x);
             }
         }
+        if(max<boomsize)
+        {
+            max=boomsize;
+            boomday=d;
+        }
     }
+    cout<<boomsize<<" "<<boomday<<endl;
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 int main()
 {
+    Graph g;
+    int E,T,x,n,y;
+    cin>>E;
+    g.Initialize(E);
+    for(int i=0;i<E;i++)
+    {
+        cin>>x;
+        for(int j=0;j<x;j++)
+        {
+            cin>>n;
+            g.nodes->adj.AddLast(n);
+        }
+    }
+    cin>>T;
+    for(int i=0;i<T;i++)
+    {
+        cin >> y;
+        BFS(g,y);
+    }
     return 0;
 }
 
