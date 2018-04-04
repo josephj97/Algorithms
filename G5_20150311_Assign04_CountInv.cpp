@@ -21,20 +21,20 @@ long long CountInv(long long* a, int n)
     long long i=0;
     long long x=0;
     long long m=(i+n)/2;
-    long long y=m+1;
+    long long y=m;
     long long cnt=0;
-    while(x<n)
+    while(x<m || y<n)
     {
-        if(i<=m && a[x]<=a[y])
+        if(x<=m && a[x]<=a[y])
             b[x++] = a[i++];
         else
         {
             b[x++] = a[y++];
-            cnt++;
+            cnt+=(m-x);
         }
     }
-    for(x=0;x<n;x++)
-        a[x] = b[x];
+    for(int ind=0;ind<n;ind++)
+        a[ind] = b[ind];
     delete[](b);
     return cnt;
 }
@@ -47,8 +47,8 @@ long long CountInvMerge(long long* a, int n)
     long long cnt=0;
     if(n<=1)
         return 1;
-    CountInvMerge(a,mid);
-    CountInvMerge(a+mid,n-mid);
+    cnt+= CountInvMerge(a,mid);
+    cnt+= CountInvMerge(a+mid,n-mid);
     cnt+= CountInv(a,n);
     return cnt;
 }
